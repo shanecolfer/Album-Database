@@ -59,7 +59,7 @@ $(function()
                     
                     success: function(response)
                     {
-                        console.log(response);
+                        window.location.href = response;
                     },
                     error: function(response)
                     {

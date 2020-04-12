@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic">
     <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
-    <link rel="stylesheet" href="assets/fonts/ionicons.min.css">
     <link rel="stylesheet" href="assets/fonts/simple-line-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
     <link rel="stylesheet" href="assets/css/Login-Form-Clean.css">
@@ -16,17 +15,50 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-light navbar-expand bg-light navigation-clean">
-        <div class="container"><a class="navbar-brand" href="index.html">Music DB</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"></button>
-            <div class="collapse navbar-collapse" id="navcol-1"></div><a class="navbar-brand" href="#">Sign In!</a></div>
+    <nav class="navbar navbar-light navbar-expand bg-light navigation-clean" style="height: 65px;">
+        <div class="container"><a class="navbar-brand" href="#">Music DB</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"></button>
+            <div class="collapse navbar-collapse" id="navcol-1"></div><a class="navbar-brand" href="#"><a class="btn btn-primary ml-auto" role="button" href="#">Search Albums</a><a class="btn btn-primary ml-auto" role="button" href="#">Favourite Albums</a><a class="btn btn-primary ml-auto" role="button"
+                href="#">Log Out</a></a>
+        </div>
     </nav>
-    <div class="login-dark" style="height: 705px;">
-        <form method="post">
-            <h2 class="sr-only">Login Form</h2>
-            <div class="illustration"><i class="icon ion-ios-locked-outline"></i></div>
-            <div class="form-group"><input class="form-control" type="email" name="email" placeholder="Email"></div>
-            <div class="form-group"><input class="form-control" type="password" name="password" placeholder="Password"></div>
-            <div class="form-group"><button class="btn btn-primary btn-block" type="submit">Sign In</button></div><a class="forgot" href="#"></a></form>
+    <div class="text-left">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4" style="padding: 2px;">
+                    <header>
+                        <h3 class="text-center">Add an album</h3>
+                    </header>
+                    <form class="text-left" method="post" style="padding: 64px;">
+                        <h2 class="sr-only">Login Form</h2>
+                        <div class="illustration"></div>
+                        <div class="form-group"><input class="form-control" type="text" placeholder="Title" name="addTitle"></div>
+                        <div class="form-group"><input class="form-control" type="text" placeholder="Artist" name="addArtist"></div>
+                        <div class="form-group"><input class="form-control" type="text" placeholder="Genre" name="addGenre"></div>
+                        <div class="form-group"><input class="form-control" type="text" placeholder="Year" name="addYear"></div>
+                        <div class="form-group"><button class="btn btn-primary btn-block" type="submit">Add!</button></div>
+                    </form>
+                </div>
+                <div class="col-md-4">
+                    <header>
+                        <h3 class="text-center">Delete an album</h3>
+                    </header>
+                    <form class="text-left" method="post" style="padding: 64px;">
+                        <h2 class="sr-only">Login Form</h2>
+                        <div class="illustration"></div>
+                        <div class="form-group"><input class="form-control" type="text" placeholder="Title" name="deleteTitle"></div>
+                        <div class="form-group"><input class="form-control" type="text" placeholder="Artist" name="deleteArtist"></div>
+                        <div class="form-group"><input class="form-control" type="text" placeholder="Genre" name="deleteGenre"></div>
+                        <div class="form-group"><input class="form-control" type="text" placeholder="Year" name="deleteYear"></div>
+                        <div class="form-group"><button class="btn btn-primary btn-block" type="submit">Delete!</button></div>
+                    </form>
+                </div>
+                <div class="col-md-4 d-xl-flex align-items-xl-start">
+                    <header class="text-center" style="width: 280px;">
+                        <h3 class="text-right">View Database</h3>
+                    </header>
+                </div>
+            </div>
+        </div>
     </div>
     <section class="features-icons bg-light text-center">
         <div class="container">

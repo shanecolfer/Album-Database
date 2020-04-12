@@ -1,5 +1,6 @@
 //Require express, body parser, mongodb
 const express = require('express');
+const session = require('express-session');
 const bodyParser = require('body-parser');
 const MongoClient = require('mongodb').MongoClient;
 const app = express();
@@ -12,6 +13,28 @@ app.use(bodyParser.json({extended: true}));
 app.set('view engine', ejsLocals);
 app.use(expressValidator());
 
+//Configure express-session
+app.use(session(
+{
+    //Set maximum age of the cookie in milliseconds
+    cookie: 
+    {
+        maxAge: 1000 * 60 * 60, //Max age of 1 hr
+        sameSite: true, //Cookies only accepted from same domain
+        secure: true,
+    },
+
+    //Set name for the session id cookie
+    name: 'session_id',
+
+    resave: false,
+
+    saveUninitialized: false,
+
+    //Set key used to sign cookie
+    secret: 'shane'
+}
+))
 
 //Connect to MongoDB
 MongoClient.connect('mongodb+srv://shanecolfer:al1916w@albumdb-7cob3.mongodb.net/test?retryWrites=true&w=majority', (err,client) => {
@@ -29,6 +52,19 @@ MongoClient.connect('mongodb+srv://shanecolfer:al1916w@albumdb-7cob3.mongodb.net
         console.log("Listening on port 3000");
     })
 })
+
+const redirectLogin = (req, res, next) =>
+{
+    //If there is a user ID don't allow a login and redirect home
+    if(req.session.userID)
+    {
+        res.redirect('/home');
+    }
+    else
+    {
+        next();
+    }
+}
 
 //Serve browser bootstrap folder
 app.use(express.static(__dirname + '/albumDBStudio'));
@@ -93,15 +129,13 @@ app.post('/signup', (req, res) => {
 })
 
 //Login page route
-app.get('/loginpage', (req,res) =>
+app.get('/loginpage', redirectLogin, (req,res) =>
 {
-    console.log("Hello");
     res.render('signIn.html');
 })
 
 app.post('/login', (req,res) =>
 {
-    
 
     const email = req.body.email;
     const password = req.body.password;
@@ -121,9 +155,18 @@ app.post('/login', (req,res) =>
             }
             else
             {
-                console.log(results);
                 user = results;
                 console.log(user);
+
+                if(user.length == 1)
+                {
+                   req.session.userId = user._id;
+                   res.send('/home.html');
+                }
+                else
+                {
+                    res.sendStatus(403);
+                }
             }
         });
     }
