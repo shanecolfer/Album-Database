@@ -16,20 +16,17 @@
 </head>
 
 <body>
-    
-
     <nav class="navbar navbar-light navbar-expand bg-light navigation-clean">
-        <div class="container"><a class="navbar-brand" href="#">Music DB</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"></button>
-            <form class="form-inline" method = "GET" action = "/loginpage"><button class="btn btn-primary" type="submit">Sign In</button></form></div>
-        </div>
+        <div class="container"><a class="navbar-brand" href="index.html">Music DB</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"></button>
+            <div class="collapse navbar-collapse" id="navcol-1"></div><a class="navbar-brand">Sign In!</a></div>
     </nav>
     <div class="login-dark" style="height: 705px;">
-        <form id = "signup">
+        <form id = "signin">
             <h2 class="sr-only">Login Form</h2>
             <div class="illustration"><i class="icon ion-ios-locked-outline"></i></div>
-            <div class="form-group"><input class="form-control" type="email" name="email" id ="email" placeholder="Enter an email"></div>
-            <div class="form-group"><input class="form-control" type="password" name="password" id="password" placeholder="Enter a password"></div>
-            <div class="form-group"><button class="btn btn-primary btn-block" id="signUpButton" type="submit">Sign Up</button></div><a class="forgot" id = "tbody"></a></form>    
+            <div class="form-group"><input class="form-control" type="email" name="email" id="email" placeholder="Email"></div>
+            <div class="form-group"><input class="form-control" type="password" name="password" id="password" placeholder="Password"></div>
+            <div class="form-group"><button class="btn btn-primary btn-block" type="submit" id="signInBtn">Sign In</button></div><a class="forgot" id = "tbody"></a></form>
     </div>
     <section class="features-icons bg-light text-center">
         <div class="container">

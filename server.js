@@ -7,7 +7,7 @@ const ejsLocals = require('ejs-locals');
 const expressValidator = require('express-validator');
 
 
-app.engine('ejs', require('ejs-locals'));
+app.engine('html', require('ejs').renderFile);
 app.use(bodyParser.json({extended: true}));
 app.set('view engine', ejsLocals);
 app.use(expressValidator());
@@ -90,6 +90,49 @@ app.post('/signup', (req, res) => {
     
 
    
+})
+
+//Login page route
+app.get('/loginpage', (req,res) =>
+{
+    console.log("Hello");
+    res.render('signIn.html');
+})
+
+app.post('/login', (req,res) =>
+{
+    
+
+    const email = req.body.email;
+    const password = req.body.password;
+
+    console.log(email);
+    console.log(password);
+
+    //Check that password and email are not empty
+    if(email && password)
+    {
+        //Check that user exists
+        db.collection('users').find({"email" : email, "password" : password}).toArray(function(err, results)
+        {
+            if(err)
+            {
+                console.log("Error finding user");
+            }
+            else
+            {
+                console.log(results);
+                user = results;
+                console.log(user);
+            }
+        });
+    }
+})
+
+//Logout route
+app.post('/logout', (req,res) => 
+{
+    
 })
 
 /* GRAVEYARD
