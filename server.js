@@ -7,34 +7,37 @@ const app = express();
 const ejsLocals = require('ejs-locals');
 const expressValidator = require('express-validator');
 
+//Configure express-session
+app.use(session(
+    {
+        //Set maximum age of the cookie in milliseconds
+        cookie: 
+        {
+            path: '/',
+            maxAge: 1000 * 60 * 60, //Max age of 1 hr
+            sameSite: true, //Cookies only accepted from same domain
+            secure: false,
+        },
+    
+        //Set name for the session id cookie
+        name: 'session_id',
+    
+        resave: false,
+    
+        saveUninitialized: false,
+    
+        //Set key used to sign cookie
+        secret: 'shane'
+    }
+    ))
+
 
 app.engine('html', require('ejs').renderFile);
 app.use(bodyParser.json({extended: true}));
 app.set('view engine', ejsLocals);
 app.use(expressValidator());
 
-//Configure express-session
-app.use(session(
-{
-    //Set maximum age of the cookie in milliseconds
-    cookie: 
-    {
-        maxAge: 1000 * 60 * 60, //Max age of 1 hr
-        sameSite: true, //Cookies only accepted from same domain
-        secure: true,
-    },
 
-    //Set name for the session id cookie
-    name: 'session_id',
-
-    resave: false,
-
-    saveUninitialized: false,
-
-    //Set key used to sign cookie
-    secret: 'shane'
-}
-))
 
 //Connect to MongoDB
 MongoClient.connect('mongodb+srv://shanecolfer:al1916w@albumdb-7cob3.mongodb.net/test?retryWrites=true&w=majority', (err,client) => {
@@ -52,19 +55,6 @@ MongoClient.connect('mongodb+srv://shanecolfer:al1916w@albumdb-7cob3.mongodb.net
         console.log("Listening on port 3000");
     })
 })
-
-const redirectLogin = (req, res, next) =>
-{
-    //If there is a user ID don't allow a login and redirect home
-    if(req.session.userID)
-    {
-        res.redirect('/home');
-    }
-    else
-    {
-        next();
-    }
-}
 
 //Serve browser bootstrap folder
 app.use(express.static(__dirname + '/albumDBStudio'));
@@ -129,9 +119,22 @@ app.post('/signup', (req, res) => {
 })
 
 //Login page route
-app.get('/loginpage', redirectLogin, (req,res) =>
+app.get('/loginpage', (req,res) =>
 {
-    res.render('signIn.html');
+
+    //If there's a cookie
+
+    console.log(req.session.session_id);
+
+    if(req.session.session_id == null)
+    {
+        res.render('signIn.html');
+    }
+    else
+    {
+        res.redirect('home.html');
+    }
+
 })
 
 app.post('/login', (req,res) =>
@@ -160,7 +163,8 @@ app.post('/login', (req,res) =>
 
                 if(user.length == 1)
                 {
-                   req.session.userId = user._id;
+                   req.session.session_id = user[0]._id;
+                   console.log("Cookie ID: " + req.session.session_id);
                    res.send('/home.html');
                 }
                 else
