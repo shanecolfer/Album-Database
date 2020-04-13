@@ -219,7 +219,7 @@ app.get('/albumSearch', (req,res) =>
     var searchTerm = req.query.searchTerm;
     console.log(searchTerm);
 
-    db.collection('albums').find({$text: { $search: searchTerm}}).toArray(function(err, results)
+    db.collection('albums').find({"Artist": searchTerm}).toArray(function(err, results)
     {
         if(err)
         {
