@@ -62,61 +62,71 @@ app.use(express.static(__dirname + '/albumDBStudio'));
 //Handle signup post request
 app.post('/signup', (req, res) => {
 
-    //Check that email and password aren't blank
-    if(req.body.email == '' || req.body.password == '')
+
+    //If there's a cookie
+
+    console.log(req.session.session_id);
+
+    if(req.session.session_id == null)
     {
-        console.log("Empty fields");
-        res.sendStatus(403);
-        res.end();
+            //Check that email and password aren't blank
+        if(req.body.email == '' || req.body.password == '')
+        {
+            console.log("Empty fields");
+            res.sendStatus(403);
+            res.end();
+        }
+        else
+        {
+            //Check that email doesn't exist
+            db.collection('users').find({"email" : req.body.email}).toArray(function(err, results)
+            {
+                if(err)
+                {
+                    console.log("error");
+                }
+                else
+                {
+                    //If email isn't in DB add it and send back 200
+                    if(results.length < 1)
+                    {
+                        console.log("Results is smaller than 1");
+                        db.collection('users').insertOne(req.body, (err, result) =>
+                        {
+                            //If error inserting, print to console
+                            if(err)
+                            {
+                                return console.log(err);
+                                res.sendStatus(500);
+                                res.end();
+                            }
+                    
+                            //Log succesful POST
+                            console.log("User Added");
+                    
+                            //Send a 200 OK back
+                            res.sendStatus(200);
+                            res.end();
+                            
+                        }) 
+                    }
+                    else //Else send back a 403
+                    {
+                        res.sendStatus(403);
+                        res.end();
+                    }
+                }
+            });
+            
+        }
     }
     else
     {
-        //Check that email doesn't exist
-        db.collection('users').find({"email" : req.body.email}).toArray(function(err, results)
-        {
-            if(err)
-            {
-                console.log("error");
-            }
-            else
-            {
-                //If email isn't in DB add it and send back 200
-                if(results.length < 1)
-                {
-                    console.log("Results is smaller than 1");
-                    db.collection('users').insertOne(req.body, (err, result) =>
-                    {
-                        //If error inserting, print to console
-                        if(err)
-                        {
-                            return console.log(err);
-                            res.sendStatus(500);
-                            res.end();
-                        }
-                
-                        //Log succesful POST
-                        console.log("User Added");
-                
-                        //Send a 200 OK back
-                        res.sendStatus(200);
-                        res.end();
-                        
-                    }) 
-                }
-                else //Else send back a 403
-                {
-                    res.sendStatus(403);
-                    res.end();
-                }
-            }
-        });
-        
+        res.sendStatus(403);
+        res.end();
     }
-
-    
-
-   
 })
+
 
 //Login page route
 app.get('/loginpage', (req,res) =>
@@ -182,6 +192,26 @@ app.post('/logout', (req,res) =>
     
 })
 
+//Get all albums from DB
+app.get('/getDatabase', (req,res) =>
+{
+    //Store entire database as json file
+    db.collection('albums').find().toArray(function(err, results)
+    {
+        if(err)
+        {
+            console.log("Error retrieving albums from DB");
+            res.sendStatus(500);
+        }
+        else
+        {
+            console.log("Albums sent to front end");
+            res.send(results);
+            res.end();
+        }
+    })
+})
+
 /* GRAVEYARD
 app.get('/', (req, res) => {
     db.collection('albums').find().toArray(function(err, results)
@@ -189,34 +219,21 @@ app.get('/', (req, res) => {
         console.log(results);
     })
 })
-
 app.get('/', (req,res) => {
     db.collection('albums').find().toArray((err, result) => {
         if (err)
         {
             return console.log(err);
         }
-
         res.render('index.ejs', {albums: result});
     })
 })
-
-
  /*db.collection('albums').find().toArray((err, result) => {
         if (err)
         {
             return console.log(err);
         }
-
         res.render('index.ejs', {albums: result});
     })
     
 */
-
-
-
-
-
-
-
-console.log("Express Baby!");

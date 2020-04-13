@@ -29,6 +29,7 @@ $(function()
             },
             error: function(response)
             {
+                console.log(response);
                 var signUpForm = $('#tbody');
 
                 signUpForm.html('');
@@ -73,4 +74,47 @@ $(function()
                 })
         })
 
+        $('#search').keyup(function()
+        {
+            $('#mainCard').html('');
+
+            var searchTerm = $('#search')
+        })
+
 });
+
+function getDatabase()
+{
+    $.ajax(
+        {
+            url: '/getDatabase',
+            method: 'GET',
+            contentType: 'application/json',
+
+            success: function(response)
+            {
+                const albums = response;
+                var cards = $('#mainCard');
+                
+                albums.forEach(album => 
+                {
+                    cards.append(` <div class="col">
+                    <div class="card" style = "margin: 40px">
+                        <div class="card-body">
+                            <h4 class="card-title">`+album.Album+ `</h4>
+                            <h5 class="text-muted card-subtitle mb-2">`+album.Artist+`</h6>
+                            <h6 class="text-muted card-subtitle mb-2">`+album.Year+`</h6>
+                            <h6 class="text-muted card-subtitle mb-2">`+album.Genre+`</h6>
+                            <button class="btn btn-primary" type="button" style="margin: 19px;">Favourite</button></div>
+                    </div>
+                </div>`);
+                })
+            },
+            error: function(response)
+            {
+                console.log(response);
+            }
+
+        }
+    )
+}

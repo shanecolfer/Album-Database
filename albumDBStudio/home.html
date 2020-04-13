@@ -8,81 +8,26 @@
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic">
     <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
-    <link rel="stylesheet" href="assets/fonts/simple-line-icons.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
     <link rel="stylesheet" href="assets/css/Login-Form-Clean.css">
     <link rel="stylesheet" href="assets/css/Login-Form-Dark.css">
 </head>
 
-<body>
-    <nav class="navbar navbar-light navbar-expand bg-light navigation-clean" style="height: 65px;">
-        <div class="container"><a class="navbar-brand" href="#">Music DB</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"></button>
-            <div class="collapse navbar-collapse" id="navcol-1"></div><a class="navbar-brand" href="#"><a class="btn btn-primary ml-auto" role="button" href="#">Search Albums</a><a class="btn btn-primary ml-auto" role="button" href="#">Favourite Albums</a><a class="btn btn-primary ml-auto" role="button"
-                href="#">Log Out</a></a>
+<body onLoad = "getDatabase()">
+    <nav class="navbar navbar-light navbar-expand bg-light navigation-clean" style="background-color: rgb(124,61,173);background-image: url(&quot;assets/img/star-sky.jpg&quot;);height: 65px;">
+        <div class="container"><a class="navbar-brand" href="#" style="color: rgba(255,255,255,0.9);">Music DB</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"></button>
+            <div class="collapse navbar-collapse" id="navcol-1"></div><a class="navbar-brand" href="#"><a class="btn btn-primary ml-auto" role="button" href="#" style="margin: 7px;">Favourite Albums</a><a class="btn btn-primary ml-auto" role="button" href="#" style="margin: 7px;">Add New Album</a><a class="btn btn-primary ml-auto"
+                role="button" href="#" style="margin: 7px;">Log Out</a></a>
         </div>
     </nav>
-    <div class="text-left">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4" style="padding: 2px;">
-                    <header>
-                        <h3 class="text-center">Add an album</h3>
-                    </header>
-                    <form class="text-left" method="post" style="padding: 64px;">
-                        <h2 class="sr-only">Login Form</h2>
-                        <div class="illustration"></div>
-                        <div class="form-group"><input class="form-control" type="text" placeholder="Title" name="addTitle"></div>
-                        <div class="form-group"><input class="form-control" type="text" placeholder="Artist" name="addArtist"></div>
-                        <div class="form-group"><input class="form-control" type="text" placeholder="Genre" name="addGenre"></div>
-                        <div class="form-group"><input class="form-control" type="text" placeholder="Year" name="addYear"></div>
-                        <div class="form-group"><button class="btn btn-primary btn-block" type="submit">Add!</button></div>
-                    </form>
-                </div>
-                <div class="col-md-4">
-                    <header>
-                        <h3 class="text-center">Delete an album</h3>
-                    </header>
-                    <form class="text-left" method="post" style="padding: 64px;">
-                        <h2 class="sr-only">Login Form</h2>
-                        <div class="illustration"></div>
-                        <div class="form-group"><input class="form-control" type="text" placeholder="Title" name="deleteTitle"></div>
-                        <div class="form-group"><input class="form-control" type="text" placeholder="Artist" name="deleteArtist"></div>
-                        <div class="form-group"><input class="form-control" type="text" placeholder="Genre" name="deleteGenre"></div>
-                        <div class="form-group"><input class="form-control" type="text" placeholder="Year" name="deleteYear"></div>
-                        <div class="form-group"><button class="btn btn-primary btn-block" type="submit">Delete!</button></div>
-                    </form>
-                </div>
-                <div class="col-md-4 d-xl-flex align-items-xl-start">
-                    <header class="text-center" style="width: 280px;">
-                        <h3 class="text-right">View Database</h3>
-                    </header>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div class="text-left"></div>
     <section class="features-icons bg-light text-center">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-4">
-                    <div class="mx-auto features-icons-item mb-5 mb-lg-0 mb-lg-3">
-                        <div class="d-flex features-icons-icon"><i class="icon-screen-desktop m-auto text-primary" data-bs-hover-animate="pulse"></i></div>
-                        <h3>Add Albums</h3>
-                        <p class="lead mb-0">Add your favourite albums!</p>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="mx-auto features-icons-item mb-5 mb-lg-0 mb-lg-3">
-                        <div class="d-flex features-icons-icon"><i class="icon-layers m-auto text-primary" data-bs-hover-animate="pulse"></i></div>
-                        <h3>View All Albums</h3>
-                        <p class="lead mb-0">Avail of the extensive music database!</p>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="mx-auto features-icons-item mb-5 mb-lg-0 mb-lg-3">
-                        <div class="d-flex features-icons-icon"><i class="icon-check m-auto text-primary" data-bs-hover-animate="pulse"></i></div>
-                        <h3>Peronalised Albums</h3>
-                        <p class="lead mb-0">Log in and view personalised lists of favourite albums!</p>
-                    </div>
+            <div>
+                <h1>Search Database:&nbsp;<input type="text" id="search"><button class="btn btn-primary" type="button" style="margin: 19px;">Search</button></h1>
+            </div>
+        </div>
+        <div class="d-flex" style="padding: 49px;">
+            <div class="row float-left" id = "mainCard">
                 </div>
             </div>
         </div>
@@ -114,7 +59,8 @@
     </footer>
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="assets/js/bs-init.js"></script>
+    <script src ="jquery.js"></script>
+    <script src ="scripts.js"></script>
 </body>
 
 </html>
