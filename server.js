@@ -212,6 +212,30 @@ app.get('/getDatabase', (req,res) =>
     })
 })
 
+//Get some albums from the DB
+app.get('/albumSearch', (req,res) =>
+{
+    console.log("insidesearch");
+    var searchTerm = req.query.searchTerm;
+    console.log(searchTerm);
+
+    db.collection('albums').find({$text: { $search: searchTerm}}).toArray(function(err, results)
+    {
+        if(err)
+        {
+            console.log("Error searching for albums in database");
+            console.log(err);
+        }
+        else
+        {
+            console.log(results);
+            res.send(results);
+            res.end();
+        }
+    })
+
+})
+
 /* GRAVEYARD
 app.get('/', (req, res) => {
     db.collection('albums').find().toArray(function(err, results)
