@@ -110,7 +110,7 @@ $(function()
                                     <h5 class="text-muted card-subtitle mb-2">`+album.Artist+`</h6>
                                     <h6 class="text-muted card-subtitle mb-2">`+album.Year+`</h6>
                                     <h6 class="text-muted card-subtitle mb-2">`+album.Genre+`</h6>
-                                    <button class="btn btn-primary" type="button" style="margin: 19px;">Favourite</button></div>
+                                    <form id = "`+album._id+`" class = "albumCard"><button class="btn btn-danger" type="submit" style="margin: 19px;" onClick = "addFavourite()">Favourite</button></form></div>
                             </div>
                         </div>`);
                         })
@@ -123,14 +123,42 @@ $(function()
                 })
         }
 
-        /*
-        event.preventDefault();
-        $('#mainCard').html('');
-
-        var searchTerm = $('#search');
-
-       */
     })
+
+    //On click 
+    $(document).bind('click', function(event)
+    {
+        console.log("There's been a click")
+
+        //If the click is an album
+        if($(event.target).hasClass('btn btn-danger'))
+        {
+            //Get the album ID (which is the button ID)
+            albumIDval = event.target.id;
+            console.log(albumIDval);
+
+            //Ajax request
+            $.ajax(
+                {
+                    url: '/addFavourite',
+                    method: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify({albumID: albumIDval}),
+                    
+                    success: function(response)
+                    {
+                        console.log(response);
+                    },
+                    error: function(response)
+                    {
+                        console.log(response);
+                    }
+                }
+            )                    
+
+        }
+        
+    });
 
 });
 
@@ -156,7 +184,7 @@ function getDatabase()
                             <h5 class="text-muted card-subtitle mb-2">`+album.Artist+`</h6>
                             <h6 class="text-muted card-subtitle mb-2">`+album.Year+`</h6>
                             <h6 class="text-muted card-subtitle mb-2">`+album.Genre+`</h6>
-                            <button class="btn btn-primary" type="button" style="margin: 19px;">Favourite</button></div>
+                            <button class="btn btn-danger" id = "`+album._id+`" type="button" style="margin: 19px;">Favourite</button>
                     </div>
                 </div>`);
                 })

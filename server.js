@@ -236,6 +236,28 @@ app.get('/albumSearch', (req,res) =>
 
 })
 
+app.put('/addFavourite', (req,res) =>
+{
+    var albumID = req.body.albumID;
+
+    console.log("Album ID server side: " + albumID);
+    console.log("Session ID server side: " + req.session.session_id);
+
+    //TODO: This isn't working??? Doesn't change DB
+    db.collection('users').updateOne({"_id": req.session.session_id}, {$push: {"favourites": albumID}}, function(err,results)
+    {
+        if(err)
+        {
+            console.log("Error updating favourite albums");
+        }
+        else
+        {
+            console.log(results);
+            res.sendStatus(200);
+            res.end();
+        }
+    })
+})
 /* GRAVEYARD
 app.get('/', (req, res) => {
     db.collection('albums').find().toArray(function(err, results)
