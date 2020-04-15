@@ -270,7 +270,6 @@ app.put('/addFavourite', (req,res) =>
     console.log("Album ID server side: " + albumID);
     console.log("Session ID server side: " + req.session.session_id);
 
-    //TODO: This isn't working
     db.collection('users').updateOne({"email": userID}, {$addToSet: {"favourites": albumID}}, function(err,results)
     {
         if(err)
@@ -289,8 +288,10 @@ app.put('/addFavourite', (req,res) =>
 app.get('/getFavourites', (req,res) =>
 {
 
+    //Favourite album array
     var favArray = new Array();
 
+    //Find user
     db.collection('users').find({"email": req.session.session_id}).toArray(function(err, results)
     {
         if(err)
@@ -298,24 +299,36 @@ app.get('/getFavourites', (req,res) =>
             console.log("Error finding user");
         }
         else
-        {
+        {   
             console.log(results[0].favourites);
-            
-            results[0].favourites.forEach(id =>{
-                var oid = new ObjectID(id);
-                console.log(oid);
-                db.collection('albums').find({"_id": oid}).toArray(function(err, results)
-                {
-                    favArray.push(results[0]);
-                });
-            })
 
-
-            setTimeout(function afterSeconds(){
-                res.send(favArray);
+            if(results[0].favourites == null)
+            {
+                res.sendStatus(500);
                 res.end();
-            }, 500)
+            }
+            else
+            {
+                //For each favourite find the related album details
+                results[0].favourites.forEach(id =>
+                    {
+                        console.log(id);
+                        var oid = new ObjectID(id);
+                        console.log(oid);
+                        db.collection('albums').find({"_id": oid}).toArray(function(err, results)
+                        {
+                            favArray.push(results[0]);
+                        });
+                    })
 
+                    //Wait until all albums are found
+                    setTimeout(function afterSeconds()
+                    {
+                        res.send(favArray);
+                        res.end();
+                    }, 500)
+            }
+            
         }
     })
 

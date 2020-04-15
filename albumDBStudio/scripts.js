@@ -110,7 +110,7 @@ $(function()
                                     <h5 class="text-muted card-subtitle mb-2">`+album.Artist+`</h6>
                                     <h6 class="text-muted card-subtitle mb-2">`+album.Year+`</h6>
                                     <h6 class="text-muted card-subtitle mb-2">`+album.Genre+`</h6>
-                                    <form id = "`+album._id+`" class = "albumCard"><button class="btn btn-danger" type="submit" style="margin: 19px;" onClick = "addFavourite()">Favourite</button></form></div>
+                                    <button class="btn btn-info" id = "`+album._id+`" type="button" style="margin: 19px;">Favourite</button>
                             </div>
                         </div>`);
                         })
@@ -130,8 +130,8 @@ $(function()
     {
         console.log("There's been a click")
 
-        //If the click is an album
-        if($(event.target).hasClass('btn btn-danger'))
+        //If the click is an album on the main list
+        if($(event.target).hasClass('btn btn-info'))
         {
             //Get the album ID (which is the button ID)
             albumIDval = event.target.id;
@@ -157,8 +157,38 @@ $(function()
                         console.log(response);
                     }
                 }
-            )                    
+            )
+        }
 
+        //If the click is an album on the favourites list
+        if($(event.target).hasClass('btn btn-danger'))
+        {
+            //Get the album ID (which is the button ID)
+            albumIDval = event.target.id;
+
+            console.log(albumIDval);
+
+            //Ajax request
+            $.ajax(
+                {
+                    url: 'delFavourite',
+                    method:'DELETE',
+                    contentType: 'application/json',
+                    data: JSON.stringify({albumID: albumIDval}),
+
+                    success: function(response)
+                    {
+                        //Write removed to button
+                        $(event.target).html('Removed from favourites');
+                    },
+                    error: function(response)
+                    {
+                        console.log(response);
+                        //Write removed to button
+                        $(event.target).html('Error please reload');
+                    }
+                }
+            )
         }
         
     });
@@ -187,7 +217,7 @@ function getDatabase()
                             <h5 class="text-muted card-subtitle mb-2">`+album.Artist+`</h6>
                             <h6 class="text-muted card-subtitle mb-2">`+album.Year+`</h6>
                             <h6 class="text-muted card-subtitle mb-2">`+album.Genre+`</h6>
-                            <button class="btn btn-danger" id = "`+album._id+`" type="button" style="margin: 19px;">Favourite</button>
+                            <button class="btn btn-info" id = "`+album._id+`" type="button" style="margin: 19px;">Favourite</button>
                     </div>
                 </div>`);
                 })
@@ -213,8 +243,6 @@ function getFavourites()
             {
                 const albums = response;
                 var cards = $('#mainCard');
-
-                console.log(response);
                 
                 albums.forEach(album => 
                 {
@@ -225,7 +253,7 @@ function getFavourites()
                             <h5 class="text-muted card-subtitle mb-2">`+album.Artist+`</h6>
                             <h6 class="text-muted card-subtitle mb-2">`+album.Year+`</h6>
                             <h6 class="text-muted card-subtitle mb-2">`+album.Genre+`</h6>
-                            <button class="btn btn-danger" id = "`+album._id+`" type="button" style="margin: 19px;">Favourite</button>
+                            <button class="btn btn-danger" id = "`+album._id+`" type="button" style="margin: 19px;">Remove</button>
                     </div>
                 </div>`);
                 })
