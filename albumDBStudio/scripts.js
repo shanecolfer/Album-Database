@@ -148,6 +148,9 @@ $(function()
                     success: function(response)
                     {
                         console.log(response);
+
+                        $(event.target).html('Added to favourites');
+                        $(event.taget).prop('disabled', true);
                     },
                     error: function(response)
                     {
@@ -174,6 +177,44 @@ function getDatabase()
             {
                 const albums = response;
                 var cards = $('#mainCard');
+                
+                albums.forEach(album => 
+                {
+                    cards.append(` <div class="col">
+                    <div class="card" style = "margin: 40px">
+                        <div class="card-body">
+                            <h4 class="card-title">`+album.Album+ `</h4>
+                            <h5 class="text-muted card-subtitle mb-2">`+album.Artist+`</h6>
+                            <h6 class="text-muted card-subtitle mb-2">`+album.Year+`</h6>
+                            <h6 class="text-muted card-subtitle mb-2">`+album.Genre+`</h6>
+                            <button class="btn btn-danger" id = "`+album._id+`" type="button" style="margin: 19px;">Favourite</button>
+                    </div>
+                </div>`);
+                })
+            },
+            error: function(response)
+            {
+                console.log(response);
+            }
+
+        }
+    )
+}
+
+function getFavourites()
+{
+    $.ajax(
+        {
+            url: '/getFavourites',
+            method: 'GET',
+            contentType: 'application/json',
+
+            success: function(response)
+            {
+                const albums = response;
+                var cards = $('#mainCard');
+
+                console.log(response);
                 
                 albums.forEach(album => 
                 {

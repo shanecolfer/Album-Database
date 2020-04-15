@@ -6,6 +6,7 @@ const MongoClient = require('mongodb').MongoClient;
 const app = express();
 const ejsLocals = require('ejs-locals');
 const expressValidator = require('express-validator');
+const ObjectID = require('mongodb').ObjectID;
 
 //Configure express-session
 app.use(session(
@@ -147,6 +148,31 @@ app.get('/loginpage', (req,res) =>
 
 })
 
+//Homepage route
+app.get('/home', (req,res) =>
+{
+    if(req.session.session_id == null)
+    {
+        res.render('signIn.html');
+    }
+    else
+    {
+        res.redirect('home.html');
+    }
+})
+
+app.get('/favouritespage', (req,res) => 
+{
+    if(req.session.session_id == null)
+    {
+        res.render('signIn.html');
+    }
+    else
+    {
+        res.redirect('favourites.html');
+    }
+})
+
 app.post('/login', (req,res) =>
 {
 
@@ -173,7 +199,7 @@ app.post('/login', (req,res) =>
 
                 if(user.length == 1)
                 {
-                   req.session.session_id = user[0]._id;
+                   req.session.session_id = user[0].email;
                    console.log("Cookie ID: " + req.session.session_id);
                    res.send('/home.html');
                 }
@@ -239,12 +265,13 @@ app.get('/albumSearch', (req,res) =>
 app.put('/addFavourite', (req,res) =>
 {
     var albumID = req.body.albumID;
+    var userID = req.session.session_id;
 
     console.log("Album ID server side: " + albumID);
     console.log("Session ID server side: " + req.session.session_id);
 
-    //TODO: This isn't working??? Doesn't change DB
-    db.collection('users').updateOne({"_id": req.session.session_id}, {$push: {"favourites": albumID}}, function(err,results)
+    //TODO: This isn't working
+    db.collection('users').updateOne({"email": userID}, {$addToSet: {"favourites": albumID}}, function(err,results)
     {
         if(err)
         {
@@ -257,6 +284,42 @@ app.put('/addFavourite', (req,res) =>
             res.end();
         }
     })
+})
+
+app.get('/getFavourites', (req,res) =>
+{
+
+    var favArray = new Array();
+
+    db.collection('users').find({"email": req.session.session_id}).toArray(function(err, results)
+    {
+        if(err)
+        {
+            console.log("Error finding user");
+        }
+        else
+        {
+            console.log(results[0].favourites);
+            
+            results[0].favourites.forEach(id =>{
+                var oid = new ObjectID(id);
+                console.log(oid);
+                db.collection('albums').find({"_id": oid}).toArray(function(err, results)
+                {
+                    favArray.push(results[0]);
+                });
+            })
+
+
+            setTimeout(function afterSeconds(){
+                res.send(favArray);
+                res.end();
+            }, 500)
+
+        }
+    })
+
+    
 })
 /* GRAVEYARD
 app.get('/', (req, res) => {

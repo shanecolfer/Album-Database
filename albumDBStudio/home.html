@@ -15,13 +15,13 @@
 <body onLoad = "getDatabase()">
     <nav class="navbar navbar-light navbar-expand bg-light navigation-clean" style="background-color: rgb(124,61,173);background-image: url(&quot;assets/img/star-sky.jpg&quot;);height: 65px;">
         <div class="container"><a class="navbar-brand" href="#" style="color: rgba(255,255,255,0.9);">Music DB</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"></button>
-            <div class="collapse navbar-collapse" id="navcol-1"></div><a class="navbar-brand" href="#"><a class="btn btn-primary ml-auto"  role="button" href="#" style="margin: 7px;">Favourite Albums</a><a class="btn btn-primary ml-auto" role="button" href="#" style="margin: 7px;">Add New Album</a><a class="btn btn-primary ml-auto"
+            <div class="collapse navbar-collapse" id="navcol-1"></div><a class="navbar-brand" href="#"><a class="btn btn-primary ml-auto"  role="button" href="/favouritespage" style="margin: 7px;">Favourite Albums</a><a class="btn btn-primary ml-auto" role="button" href="#" style="margin: 7px;">Add New Album</a><a class="btn btn-primary ml-auto"
                 role="button" href="#" style="margin: 7px;">Log Out</a></a>
         </div>
     </nav>
     <div class="text-left"></div>
     <section class="features-icons bg-light text-center">
-        <div class="container">
+        <div class="container" id = "searchcontainer">
             <div>
                 <h1>Search Database:&nbsp;<input type="text" id = "search"></h1>
             </div>
