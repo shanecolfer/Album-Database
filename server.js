@@ -285,6 +285,26 @@ app.put('/addFavourite', (req,res) =>
     })
 })
 
+app.delete('/delFavourite', (req,res) =>
+{
+    var albumID = req.body.albumID;
+    var userID = req.session.session_id;
+
+    db.collection('users').updateOne({"email": userID}, {$pull: {"favourites": albumID}}, function (err,results)
+    {
+        if(err)
+        {
+            console.log("Error deleting favourite album");
+        }
+        else
+        {
+            console.log("Sucess deleting favourite album");
+            res.sendStatus(200);
+            res.end();
+        }
+    })
+})
+
 app.get('/getFavourites', (req,res) =>
 {
 
