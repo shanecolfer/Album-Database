@@ -225,6 +225,95 @@ $(function()
             )
         }
         
+        //If the click is an edit button
+        if($(event.target).hasClass('btn btn-warning'))
+        {
+            console.log(event.target.id);
+
+            //Get the specific div ID
+            divID = "div" + event.target.id;
+            //Get album ID
+            albumID = event.target.id;
+
+            //Get album attributes
+            album = $("#" + "title" + albumID).text();
+            artist = $("#" + "artist" + albumID).text();
+            year = $("#" + "year" + albumID).text();
+            genre = $("#" + "genre" + albumID).text();
+
+            console.log("Before: ")
+            console.log(album)
+            console.log(artist)
+            console.log(year)
+            console.log(genre)
+
+            console.log(divID);
+
+            $("#" + divID).html('');
+            $("#" + divID).append(`<form id = "editForm`+albumID+`">
+            <h2 class="sr-only">Login Form</h2>
+            <div class="illustration">
+                <h3>Edit Album Details</h3>
+            </div>
+            <div class="form-group"><input class="form-control" type="text" id = "updatedtitle`+albumID+`" placeholder="`+album+`" value = "`+album+`" required="required" minlength="1"></div>
+            <div class="form-group"><input class="form-control" type="text" id = "updatedartist`+albumID+`"  placeholder="`+artist+`" value = "`+artist+`" required="required" minlength="1"></div>
+            <div class="form-group"><input class="form-control" type="number" id = "updatedyear`+albumID+`"  placeholder="`+year+`" value = "`+year+`" required="required" minlength="3"></div>
+            <div class="form-group"><input class="form-control" type="text" id = "updatedgenre`+albumID+`"  placeholder="`+genre+`" value = "`+genre+`" required="required" minlength="1"></div>
+            <div class="form-group"><button class="btn btn-secondary" type="button" id = "`+albumID+`">Edit!</button></div><a class="forgot" href="#" id = "sout"></a></form>
+            `);
+
+        }
+
+        //If the click is an edit submit
+        if($(event.target).hasClass('btn btn-secondary'))
+        {
+            console.log("Submit edit pushed");
+
+            //Get album ID
+            albumID = event.target.id;
+
+            console.log("AlbumID: " + albumID);
+
+            //Get updated album attributes
+            album = $("#" + "updatedtitle" + albumID).val();
+            artist = $("#" + "updatedartist" + albumID).val();
+            year = $("#" + "updatedyear" + albumID).val();
+            genre = $("#" + "updatedgenre" + albumID).val();
+
+            //Ajax request
+            $.ajax(
+                {
+                    url: '/updateAlbum',
+                    method: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify({"_id": albumID, "Album": album, "Artist": artist, "Year": year, "Genre": genre}),
+                    
+                    success: function(response)
+                    {
+                        console.log(response);
+
+                        $(event.target).html('Updated');
+                        $(event.taget).prop('disabled', true);
+
+                        //Re display album card showing new
+                        $("#" + "editForm" + albumID).html('');
+                        $("#" + "editForm" + albumID).append(`<h4 class="card-title" id = "title`+album._id+`">`+album+ `</h4>
+                        <h5 class="text-muted card-subtitle mb-2" id = "artist`+album._id+`">`+artist+`</h6>
+                        <h6 class="text-muted card-subtitle mb-2" id = "year`+album._id+`">`+year+`</h6>
+                        <h6 class="text-muted card-subtitle mb-2" id = "genre`+album._id+`">`+genre+`</h6>
+                        <button class="btn btn-warning" id = "`+album._id+`" type = "button style = "margin: 20px;">Edit</button>
+                        <button class="btn btn-info" id = "`+album._id+`" type="button" style="margin: 20px;">Favourite</button>`);
+                    },
+                    error: function(response)
+                    {
+                        console.log(response);
+                    }
+                }
+            )
+
+            
+        }
+        
     });
 
 });
@@ -246,12 +335,13 @@ function getDatabase()
                 {
                     cards.append(` <div class="col">
                     <div class="card" style = "margin: 40px">
-                        <div class="card-body">
-                            <h4 class="card-title">`+album.Album+ `</h4>
-                            <h5 class="text-muted card-subtitle mb-2">`+album.Artist+`</h6>
-                            <h6 class="text-muted card-subtitle mb-2">`+album.Year+`</h6>
-                            <h6 class="text-muted card-subtitle mb-2">`+album.Genre+`</h6>
-                            <button class="btn btn-info" id = "`+album._id+`" type="button" style="margin: 19px;">Favourite</button>
+                        <div class="card-body" id = "div`+album._id+`">
+                            <h4 class="card-title" id = "title`+album._id+`">`+album.Album+ `</h4>
+                            <h5 class="text-muted card-subtitle mb-2" id = "artist`+album._id+`">`+album.Artist+`</h6>
+                            <h6 class="text-muted card-subtitle mb-2" id = "year`+album._id+`">`+album.Year+`</h6>
+                            <h6 class="text-muted card-subtitle mb-2" id = "genre`+album._id+`">`+album.Genre+`</h6>
+                            <button class="btn btn-warning" id = "`+album._id+`" type = "button style = "margin: 20px;">Edit</button>
+                            <button class="btn btn-info" id = "`+album._id+`" type="button" style="margin: 20px;">Favourite</button>
                     </div>
                 </div>`);
                 })
@@ -290,12 +380,13 @@ function getFavourites()
                         {
                             cards.append(` <div class="col">
                             <div class="card" style = "margin: 40px">
-                                <div class="card-body">
-                                    <h4 class="card-title">`+album.Album+ `</h4>
-                                    <h5 class="text-muted card-subtitle mb-2">`+album.Artist+`</h6>
-                                    <h6 class="text-muted card-subtitle mb-2">`+album.Year+`</h6>
-                                    <h6 class="text-muted card-subtitle mb-2">`+album.Genre+`</h6>
-                                    <button class="btn btn-danger" id = "`+album._id+`" type="button" style="margin: 19px;">Remove</button>
+                                <div class="card-body" id = "div`+album._id+`">
+                                    <h4 class="card-title" id = "title`+album._id+`">`+album.Album+ `</h4>
+                                    <h5 class="text-muted card-subtitle mb-2" id = "artist`+album._id+`">`+album.Artist+`</h6>
+                                    <h6 class="text-muted card-subtitle mb-2" id = "year`+album._id+`">`+album.Year+`</h6>
+                                    <h6 class="text-muted card-subtitle mb-2" id = "genre`+album._id+`">`+album.Genre+`</h6>
+                                    <button class="btn btn-warning" id = "`+album._id+`" type = "button style = "margin: 10px;">Edit</button>
+                                    <button class="btn btn-danger" id = "`+album._id+`" type="button" style="margin: 10px;">Remove</button>
                             </div>
                         </div>`);
                         })

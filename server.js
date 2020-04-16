@@ -378,6 +378,38 @@ app.delete('/delFavourite', (req,res) =>
     })
 })
 
+app.put('/updateAlbum', (req,res) =>
+{
+    //Read in variables from request JSON
+    var albumID = req.body._id;
+    var album = req.body.Album;
+    var artist = req.body.Artist;
+    var year = req.body.Year;
+    var genre = req.body.Genre;
+
+    //Create id object from album ID
+    var oid = new ObjectID(albumID);
+
+    console.log(albumID);
+    console.log(oid);
+
+    //Update album with all new fields
+    db.collection('albums').updateOne({"_id": oid}, {$set: {"Album": album, "Artist": artist, "Year": year, "Genre": genre}}, function(err,results)
+    {
+        if(err)
+        {
+            console.log(err);
+            res.sendStatus(500);
+            res.end();
+        }
+        else
+        {
+            console.log("Success updating database");
+            res.sendStatus(200);
+        }
+    })
+})
+
 app.get('/getFavourites', (req,res) =>
 {
 
