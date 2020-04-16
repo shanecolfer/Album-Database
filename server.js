@@ -286,9 +286,13 @@ app.post('/addalbum', (req,res) =>
 })
 
 //Logout route
-app.post('/logout', (req,res) => 
+app.get('/logout', (req,res) => 
 {
-    
+    console.log(req.session.session_id);
+    req.session.destroy(err => 
+    {
+        res.redirect('/');
+    })
 })
 
 //Get all albums from DB
@@ -393,21 +397,35 @@ app.put('/updateAlbum', (req,res) =>
     console.log(albumID);
     console.log(oid);
 
-    //Update album with all new fields
-    db.collection('albums').updateOne({"_id": oid}, {$set: {"Album": album, "Artist": artist, "Year": year, "Genre": genre}}, function(err,results)
+    if(albumID && album && artist && year && genre)
     {
-        if(err)
+        //Update album with all new fields
+        db.collection('albums').updateOne({"_id": oid}, {$set: {"Album": album, "Artist": artist, "Year": year, "Genre": genre}}, function(err,results)
         {
-            console.log(err);
-            res.sendStatus(500);
-            res.end();
-        }
-        else
-        {
-            console.log("Success updating database");
-            res.sendStatus(200);
-        }
-    })
+            if(err)
+            {
+                console.log(err);
+                res.sendStatus(500);
+                res.end();
+            }
+            else
+            {
+                console.log("Success updating database");
+                res.sendStatus(200);
+                res.end();
+            }
+        })
+    }
+    else
+    {
+        console.log("Invalid variables");
+
+        //Send forbidden
+        res.sendStatus(403);
+        res.end();
+    }
+
+    
 })
 
 app.get('/getFavourites', (req,res) =>

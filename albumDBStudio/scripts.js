@@ -138,15 +138,16 @@ $(function()
                         albums.forEach(album => 
                         {
                             cards.append(` <div class="col">
-                            <div class="card" style = "margin: 40px">
-                                <div class="card-body">
-                                    <h4 class="card-title">`+album.Album+ `</h4>
-                                    <h5 class="text-muted card-subtitle mb-2">`+album.Artist+`</h6>
-                                    <h6 class="text-muted card-subtitle mb-2">`+album.Year+`</h6>
-                                    <h6 class="text-muted card-subtitle mb-2">`+album.Genre+`</h6>
-                                    <button class="btn btn-info" id = "`+album._id+`" type="button" style="margin: 19px;">Favourite</button>
-                            </div>
-                        </div>`);
+                    <div class="card" style = "margin: 40px">
+                        <div class="card-body" id = "div`+album._id+`">
+                            <h4 class="card-title" id = "title`+album._id+`">`+album.Album+ `</h4>
+                            <h5 class="text-muted card-subtitle mb-2" id = "artist`+album._id+`">`+album.Artist+`</h6>
+                            <h6 class="text-muted card-subtitle mb-2" id = "year`+album._id+`">`+album.Year+`</h6>
+                            <h6 class="text-muted card-subtitle mb-2" id = "genre`+album._id+`">`+album.Genre+`</h6>
+                            <button class="btn btn-warning" id = "`+album._id+`" type = "button" style = "margin: 10px;">Edit</button>
+                            <button class="btn btn-info" id = "`+album._id+`" type="button" style="margin: 10px;">&#10084</button>
+                    </div>
+                </div>`);
                         })
                     },
                     error: function(response)
@@ -183,7 +184,7 @@ $(function()
                     {
                         console.log(response);
 
-                        $(event.target).html('Added to favourites');
+                        $(event.target).html('&#10004;');
                         $(event.taget).prop('disabled', true);
                     },
                     error: function(response)
@@ -194,7 +195,7 @@ $(function()
             )
         }
 
-        //If the click is an album on the favourites list
+        //If the click is an album on the favourites list (remove)
         if($(event.target).hasClass('btn btn-danger'))
         {
             //Get the album ID (which is the button ID)
@@ -213,7 +214,7 @@ $(function()
                     success: function(response)
                     {
                         //Write removed to button
-                        $(event.target).html('Removed from favourites');
+                        $("#"+ "card" +albumIDval).html('');
                     },
                     error: function(response)
                     {
@@ -250,7 +251,7 @@ $(function()
             console.log(divID);
 
             $("#" + divID).html('');
-            $("#" + divID).append(`<form id = "editForm`+albumID+`">
+            $("#" + divID).append(`<form id = "div`+albumID+`">
             <h2 class="sr-only">Login Form</h2>
             <div class="illustration">
                 <h3>Edit Album Details</h3>
@@ -259,7 +260,7 @@ $(function()
             <div class="form-group"><input class="form-control" type="text" id = "updatedartist`+albumID+`"  placeholder="`+artist+`" value = "`+artist+`" required="required" minlength="1"></div>
             <div class="form-group"><input class="form-control" type="number" id = "updatedyear`+albumID+`"  placeholder="`+year+`" value = "`+year+`" required="required" minlength="3"></div>
             <div class="form-group"><input class="form-control" type="text" id = "updatedgenre`+albumID+`"  placeholder="`+genre+`" value = "`+genre+`" required="required" minlength="1"></div>
-            <div class="form-group"><button class="btn btn-secondary" type="button" id = "`+albumID+`">Edit!</button></div><a class="forgot" href="#" id = "sout"></a></form>
+            <div class="form-group"><button class="btn btn-secondary" type="button" id = "`+albumID+`">Edit!</button></div><a class="forgot" href="#" id = "sout`+albumID+`"></a></form>
             `);
 
         }
@@ -295,18 +296,55 @@ $(function()
                         $(event.target).html('Updated');
                         $(event.taget).prop('disabled', true);
 
-                        //Re display album card showing new
-                        $("#" + "editForm" + albumID).html('');
-                        $("#" + "editForm" + albumID).append(`<h4 class="card-title" id = "title`+album._id+`">`+album+ `</h4>
-                        <h5 class="text-muted card-subtitle mb-2" id = "artist`+album._id+`">`+artist+`</h6>
-                        <h6 class="text-muted card-subtitle mb-2" id = "year`+album._id+`">`+year+`</h6>
-                        <h6 class="text-muted card-subtitle mb-2" id = "genre`+album._id+`">`+genre+`</h6>
-                        <button class="btn btn-warning" id = "`+album._id+`" type = "button style = "margin: 20px;">Edit</button>
-                        <button class="btn btn-info" id = "`+album._id+`" type="button" style="margin: 20px;">Favourite</button>`);
+                        console.log(window.location.href);
+                        
+
+                        if(window.location.href == "http://localhost:3000/home.html")
+                        {
+                            //Re display album card showing new
+                            $("#" + "div" + albumID).html('');
+
+                            $("#" + "div" + albumID).append(`<h4 class="card-title" id = "title`+albumID+`">`+album+ `</h4>
+                            <h5 class="text-muted card-subtitle mb-2" id = "artist`+albumID+`">`+artist+`</h6>
+                            <h6 class="text-muted card-subtitle mb-2" id = "year`+albumID+`">`+year+`</h6>
+                            <h6 class="text-muted card-subtitle mb-2" id = "genre`+albumID+`">`+genre+`</h6>
+                            <button class="btn btn-warning" id = "`+albumID+`" type = "button style = "margin: 20px;">Edit</button>
+                            <button class="btn btn-info" id = "`+albumID+`" type="button" style="margin: 20px;">&#10084</button>`);
+                        }
+                        else
+                        {
+
+                            //Re display album card showing new
+                            $("#" + "div" + albumID).html('');
+                            
+                            $("#" + "div" + albumID).append(`<h4 class="card-title" id = "title`+albumID+`">`+album+ `</h4>
+                            <h5 class="text-muted card-subtitle mb-2" id = "artist`+albumID+`">`+artist+`</h6>
+                            <h6 class="text-muted card-subtitle mb-2" id = "year`+albumID+`">`+year+`</h6>
+                            <h6 class="text-muted card-subtitle mb-2" id = "genre`+albumID+`">`+genre+`</h6>
+                            <button class="btn btn-warning" id = "`+albumID+`" type = "button style = "margin: 10px;">Edit</button>
+                            <button class="btn btn-danger" id = "`+albumID+`" type="button" style="margin: 10px;">Remove</button>`);
+                        }
+
+
+                        
                     },
                     error: function(response)
                     {
                         console.log(response);
+
+                        if(response.status == 403)
+                        {
+                            //Print error message (One or many fields missing)
+                            $("#" + "sout" + albumID).html('');
+                            $("#" + "sout" + albumID).append('<font color = "red">Please include all fields!</font>');
+                        }
+                        else if (response.status == 500)
+                        {
+                            //Print error message (One or many fields missing)
+                            $("#" + "sout" + albumID).html('');
+                            $("#" + "sout" + albumID).append('<font color = "red">Server error!</font>');
+                        }
+                        
                     }
                 }
             )
@@ -335,13 +373,13 @@ function getDatabase()
                 {
                     cards.append(` <div class="col">
                     <div class="card" style = "margin: 40px">
-                        <div class="card-body" id = "div`+album._id+`">
+                        <div class="card-body" id = "div`+album._id+`" style = "margin: 10px" >
                             <h4 class="card-title" id = "title`+album._id+`">`+album.Album+ `</h4>
                             <h5 class="text-muted card-subtitle mb-2" id = "artist`+album._id+`">`+album.Artist+`</h6>
                             <h6 class="text-muted card-subtitle mb-2" id = "year`+album._id+`">`+album.Year+`</h6>
                             <h6 class="text-muted card-subtitle mb-2" id = "genre`+album._id+`">`+album.Genre+`</h6>
-                            <button class="btn btn-warning" id = "`+album._id+`" type = "button style = "margin: 20px;">Edit</button>
-                            <button class="btn btn-info" id = "`+album._id+`" type="button" style="margin: 20px;">Favourite</button>
+                            <button class="btn btn-warning" id = "`+album._id+`" type = "button" style = "width: 100px; margin: 10px">Edit</button>
+                            <button class="btn btn-info" id = "`+album._id+`" type="button" style="width: 100px;">&#10084</button>
                     </div>
                 </div>`);
                 })
@@ -379,8 +417,8 @@ function getFavourites()
                     albums.forEach(album => 
                         {
                             cards.append(` <div class="col">
-                            <div class="card" style = "margin: 40px">
-                                <div class="card-body" id = "div`+album._id+`">
+                            <div class="card" style = "margin: 40px" id = "card`+album._id+`">
+                                <div class="card-body" id = "div`+album._id+`" style = "margin: 10px">
                                     <h4 class="card-title" id = "title`+album._id+`">`+album.Album+ `</h4>
                                     <h5 class="text-muted card-subtitle mb-2" id = "artist`+album._id+`">`+album.Artist+`</h6>
                                     <h6 class="text-muted card-subtitle mb-2" id = "year`+album._id+`">`+album.Year+`</h6>
