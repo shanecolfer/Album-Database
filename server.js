@@ -163,6 +163,7 @@ app.get('/home', (req,res) =>
 
 app.get('/favouritespage', (req,res) => 
 {
+    //Check if there's a session ID
     if(req.session.session_id == null)
     {
         res.render('signIn.html');
@@ -170,6 +171,19 @@ app.get('/favouritespage', (req,res) =>
     else
     {
         res.redirect('favourites.html');
+    }
+})
+
+app.get('/addpage', (req,res) => 
+{
+    //Check if there's a session ID
+    if(req.session.session_id == null)
+    {
+        res.render('signIn.html');
+    }
+    else
+    {
+        res.redirect('add.html');
     }
 })
 
@@ -209,6 +223,65 @@ app.post('/login', (req,res) =>
                 }
             }
         });
+    }
+})
+
+app.post('/addalbum', (req,res) => 
+{
+    const album = req.body.Album;
+    const artist = req.body.Artist;
+    const year = req.body.Year;
+    const genre = req.body.Genre;
+
+    console.log(album + artist + year + genre);
+
+    //Check that title, artist, year and genre are not empty
+    if (album && artist && year && genre)
+    {
+        //Check if album is already in DB
+        db.collection('albums').find({"Album": album, "Artist": artist}).toArray(function(err, results)
+        {
+            if(err)
+            {
+                console.log("Error checking if album exists");
+            }
+            else
+            {
+                //If album isn't in DB add it and send back 200 OK
+                if(results.length < 1)
+                {
+                    db.collection('albums').insertOne(req.body, (err,result) =>
+                    {
+                        if(err)
+                        {
+                            console.log("Error adding album to DB");
+                            res.sendStatus(500);
+                            res.end();
+                        }
+                        else
+                        {
+                            console.log("Album added");
+                            
+                            //Send a 200 OK
+                            res.sendStatus(200);
+                            res.end();
+                        }
+                    })
+                }
+                else
+                {
+                    //Send back 403, album exists
+                    res.sendStatus(403);
+                    res.end();
+                }
+            }
+        })
+    }
+    else
+    {
+        //Send back 403, bad input
+        res.sendStatus(403);
+        res.end();
     }
 })
 

@@ -74,6 +74,40 @@ $(function()
         })
     })
 
+    $('#addalbumbutton').on('click', function(event)
+    {
+        console.log("Add album clicked");
+
+        var title = $('#title');
+        var artist = $('#artist');
+        var year = $('#year');
+        var genre = $('#genre');
+
+        console.log(title.val());
+
+        $.ajax(
+            {
+                url: '/addalbum',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({"Album": title.val(), "Artist": artist.val(), "Year": year.val(), "Genre": genre.val()}),
+
+                success: function(response)
+                {
+                    var output = $('#sout');
+                    output.html('');
+                    output.append('Album added to DB!');
+                },
+                error: function(response)
+                {
+                    var output = $('#sout');
+                    output.html('');
+                    output.append('Album already exists or is invalid! :(');
+                }
+            }
+        )
+    })
+
     $('#search').keypress(function(event)
     {
 
@@ -243,20 +277,29 @@ function getFavourites()
             {
                 const albums = response;
                 var cards = $('#mainCard');
-                
-                albums.forEach(album => 
+                var heading = $('#info');
+
+                if(albums.length < 1)
                 {
-                    cards.append(` <div class="col">
-                    <div class="card" style = "margin: 40px">
-                        <div class="card-body">
-                            <h4 class="card-title">`+album.Album+ `</h4>
-                            <h5 class="text-muted card-subtitle mb-2">`+album.Artist+`</h6>
-                            <h6 class="text-muted card-subtitle mb-2">`+album.Year+`</h6>
-                            <h6 class="text-muted card-subtitle mb-2">`+album.Genre+`</h6>
-                            <button class="btn btn-danger" id = "`+album._id+`" type="button" style="margin: 19px;">Remove</button>
-                    </div>
-                </div>`);
-                })
+                    heading.html('');
+                    heading.append('<h2> No favourites yet! <h2>');
+                }
+                else
+                {
+                    albums.forEach(album => 
+                        {
+                            cards.append(` <div class="col">
+                            <div class="card" style = "margin: 40px">
+                                <div class="card-body">
+                                    <h4 class="card-title">`+album.Album+ `</h4>
+                                    <h5 class="text-muted card-subtitle mb-2">`+album.Artist+`</h6>
+                                    <h6 class="text-muted card-subtitle mb-2">`+album.Year+`</h6>
+                                    <h6 class="text-muted card-subtitle mb-2">`+album.Genre+`</h6>
+                                    <button class="btn btn-danger" id = "`+album._id+`" type="button" style="margin: 19px;">Remove</button>
+                            </div>
+                        </div>`);
+                        })
+                }
             },
             error: function(response)
             {
