@@ -299,7 +299,7 @@ $(function()
                         console.log(window.location.href);
                         
 
-                        if(window.location.href == "http://localhost:3000/home.html")
+                        if(window.location.href == "http://localhost:3000/home")
                         {
                             //Re display album card showing new
                             $("#" + "div" + albumID).html('');
