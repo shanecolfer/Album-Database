@@ -143,7 +143,7 @@ app.get('/loginpage', (req,res) =>
     }
     else
     {
-        res.redirect('home.html');
+        res.render('home.html');
     }
 
 })
@@ -151,13 +151,14 @@ app.get('/loginpage', (req,res) =>
 //Homepage route
 app.get('/home', (req,res) =>
 {
-    if(req.session.session_id == null)
+    //If there's a cookie
+    if(req.session.session_id)
     {
-        res.render('signIn.html');
+        res.render('home.html');
     }
     else
     {
-        res.redirect('home.html');
+        res.render('signIn.html');
     }
 })
 
@@ -170,7 +171,7 @@ app.get('/favouritespage', (req,res) =>
     }
     else
     {
-        res.redirect('favourites.html');
+        res.render('favourites.html');
     }
 })
 
@@ -183,7 +184,20 @@ app.get('/addpage', (req,res) =>
     }
     else
     {
-        res.redirect('add.html');
+        res.render('add.html');
+    }
+})
+
+app.get('/', (req,res) =>
+{   
+    //Check if there's a session ID
+    if(req.session.session_id == null)
+    {
+        res.render('index.html');
+    }
+    else
+    {
+        res.render('home.html');
     }
 })
 
@@ -215,7 +229,7 @@ app.post('/login', (req,res) =>
                 {
                    req.session.session_id = user[0].email;
                    console.log("Cookie ID: " + req.session.session_id);
-                   res.send('/home.html');
+                   res.send('/home');
                 }
                 else
                 {
@@ -291,7 +305,7 @@ app.get('/logout', (req,res) =>
     console.log(req.session.session_id);
     req.session.destroy(err => 
     {
-        res.redirect('/');
+        res.render('index.html');
     })
 })
 
@@ -427,6 +441,8 @@ app.put('/updateAlbum', (req,res) =>
 
     
 })
+
+
 
 app.get('/getFavourites', (req,res) =>
 {
