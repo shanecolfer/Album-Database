@@ -145,7 +145,7 @@ $(function()
                             <h6 class="text-muted card-subtitle mb-2" id = "year`+album._id+`">`+album.Year+`</h6>
                             <h6 class="text-muted card-subtitle mb-2" id = "genre`+album._id+`">`+album.Genre+`</h6>
                             <button class="btn btn-warning" id = "`+album._id+`" type = "button" style = "margin: 10px;">Edit</button>
-                            <button class="btn btn-info" id = "`+album._id+`" type="button" style="margin: 10px;">&#10084</button>
+                            <button class="btn btn-info" id = "`+album._id+`" type="button" style="margin: 10px; background-color: #f25a64"">&#10084</button>
                     </div>
                 </div>`);
                         })
@@ -309,7 +309,7 @@ $(function()
                             <h6 class="text-muted card-subtitle mb-2" id = "year`+albumID+`">`+year+`</h6>
                             <h6 class="text-muted card-subtitle mb-2" id = "genre`+albumID+`">`+genre+`</h6>
                             <button class="btn btn-warning" id = "`+albumID+`" type = "button style = "margin: 20px;">Edit</button>
-                            <button class="btn btn-info" id = "`+albumID+`" type="button" style="margin: 20px;">&#10084</button>`);
+                            <button class="btn btn-info" id = "`+albumID+`" type="button" style="margin: 20px; background-color: #f25a64">&#10084</button>`);
                         }
                         else
                         {
@@ -379,7 +379,7 @@ function getDatabase()
                             <h6 class="text-muted card-subtitle mb-2" id = "year`+album._id+`">`+album.Year+`</h6>
                             <h6 class="text-muted card-subtitle mb-2" id = "genre`+album._id+`">`+album.Genre+`</h6>
                             <button class="btn btn-warning" id = "`+album._id+`" type = "button" style = "width: 100px; margin: 10px">Edit</button>
-                            <button class="btn btn-info" id = "`+album._id+`" type="button" style="width: 100px;">&#10084</button>
+                            <button class="btn btn-info" id = "`+album._id+`" type="button" style="width: 100px; background-color: #f25a64">&#10084</button>
                     </div>
                 </div>`);
                 })
