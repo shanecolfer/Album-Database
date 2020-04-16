@@ -297,9 +297,10 @@ $(function()
                         $(event.taget).prop('disabled', true);
 
                         console.log(window.location.href);
+                        console.log(window.location.pathname);
                         
 
-                        if(window.location.href == "http://localhost:3000/home")
+                        if(window.location.pathname == "/home")
                         {
                             //Re display album card showing new
                             $("#" + "div" + albumID).html('');
@@ -308,8 +309,8 @@ $(function()
                             <h5 class="text-muted card-subtitle mb-2" id = "artist`+albumID+`">`+artist+`</h6>
                             <h6 class="text-muted card-subtitle mb-2" id = "year`+albumID+`">`+year+`</h6>
                             <h6 class="text-muted card-subtitle mb-2" id = "genre`+albumID+`">`+genre+`</h6>
-                            <button class="btn btn-warning" id = "`+albumID+`" type = "button style = "margin: 20px;">Edit</button>
-                            <button class="btn btn-info" id = "`+albumID+`" type="button" style="margin: 20px; background-color: #f25a64">&#10084</button>`);
+                            <button class="btn btn-warning" id = "`+albumID+`" type = "button" style = "width: 100px; margin: 10px">Edit</button>
+                            <button class="btn btn-info" id = "`+albumID+`" type="button" style="width: 100px; background-color: #f25a64">&#10084</button>`);
                         }
                         else
                         {
