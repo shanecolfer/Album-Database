@@ -201,7 +201,7 @@ $(function()
         {
 
             //If we're on the home window remove from DB (not favourites)
-            if(window.location.pathname == "/home")
+            if(window.location.pathname == "/home" || window.location.pathname == "/")
             {
                  //Get the album ID (which is the button ID)
                  albumIDval = event.target.id;
