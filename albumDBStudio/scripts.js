@@ -138,7 +138,7 @@ $(function()
                         albums.forEach(album => 
                         {
                             cards.append(` <div class="col">
-                    <div class="card" style = "margin: 40px">
+                    <div class="card" style = "margin: 40px" id = "card`+album._id+`">
                         <div class="card-body" id = "div`+album._id+`">
                             <h4 class="card-title" id = "title`+album._id+`">`+album.Album+ `</h4>
                             <h5 class="text-muted card-subtitle mb-2" id = "artist`+album._id+`">`+album.Artist+`</h6>
@@ -146,6 +146,7 @@ $(function()
                             <h6 class="text-muted card-subtitle mb-2" id = "genre`+album._id+`">`+album.Genre+`</h6>
                             <button class="btn btn-warning" id = "`+album._id+`" type = "button" style = "margin: 10px;">Edit</button>
                             <button class="btn btn-info" id = "`+album._id+`" type="button" style="margin: 10px; background-color: #f25a64"">&#10084</button>
+                            <button class="btn btn-danger" id = "`+album._id+`" type="button" style="margin: 10px;">Remove</button>
                     </div>
                 </div>`);
                         })
@@ -195,35 +196,69 @@ $(function()
             )
         }
 
-        //If the click is an album on the favourites list (remove)
+        //If the click is a remove
         if($(event.target).hasClass('btn btn-danger'))
         {
-            //Get the album ID (which is the button ID)
-            albumIDval = event.target.id;
 
-            console.log(albumIDval);
+            //If we're on the home window remove from DB (not favourites)
+            if(window.location.pathname == "/home")
+            {
+                 //Get the album ID (which is the button ID)
+                 albumIDval = event.target.id;
 
-            //Ajax request
-            $.ajax(
-                {
-                    url: 'delFavourite',
-                    method:'DELETE',
-                    contentType: 'application/json',
-                    data: JSON.stringify({albumID: albumIDval}),
+                 console.log("Album ID of Button: " + albumIDval);
 
-                    success: function(response)
+                 $.ajax(
+                     {
+                         url: 'delAlbum',
+                         method: 'DELETE',
+                         contentType: 'application/json',
+                         data: JSON.stringify({albumID: albumIDval}),
+
+                        success: function(response)
+                        {
+                            //Write removed to button
+                            $("#"+ "card" +albumIDval).html('');
+                        },
+                        error: function(response)
+                        {
+                            console.log(response);
+                            //Write error to button
+                            $(event.target).html('Error please reload');
+                        }
+                     }
+                 )
+            }
+            else
+            {
+                //Get the album ID (which is the button ID)
+                albumIDval = event.target.id;
+
+                console.log(albumIDval);
+
+                //Ajax request
+                $.ajax(
                     {
-                        //Write removed to button
-                        $("#"+ "card" +albumIDval).html('');
-                    },
-                    error: function(response)
-                    {
-                        console.log(response);
-                        //Write removed to button
-                        $(event.target).html('Error please reload');
+                        url: 'delFavourite',
+                        method:'DELETE',
+                        contentType: 'application/json',
+                        data: JSON.stringify({albumID: albumIDval}),
+
+                        success: function(response)
+                        {
+                            //Write removed to button
+                            $("#"+ "card" +albumIDval).html('');
+                        },
+                        error: function(response)
+                        {
+                            console.log(response);
+                            //Write removed to button
+                            $(event.target).html('Error please reload');
+                        }
                     }
-                }
-            )
+                )
+            }
+            
         }
         
         //If the click is an edit button
@@ -300,7 +335,7 @@ $(function()
                         console.log(window.location.pathname);
                         
 
-                        if(window.location.pathname == "/home")
+                        if(window.location.pathname == "/home" || window.location.pathname == "/")
                         {
                             //Re display album card showing new
                             $("#" + "div" + albumID).html('');
@@ -310,7 +345,8 @@ $(function()
                             <h6 class="text-muted card-subtitle mb-2" id = "year`+albumID+`">`+year+`</h6>
                             <h6 class="text-muted card-subtitle mb-2" id = "genre`+albumID+`">`+genre+`</h6>
                             <button class="btn btn-warning" id = "`+albumID+`" type = "button" style = "width: 100px; margin: 10px">Edit</button>
-                            <button class="btn btn-info" id = "`+albumID+`" type="button" style="width: 100px; background-color: #f25a64">&#10084</button>`);
+                            <button class="btn btn-info" id = "`+albumID+`" type="button" style="width: 100px; background-color: #f25a64">&#10084</button>
+                            <button class="btn btn-danger" id = "`+albumID+`" type="button" style="margin: 10px;">Remove</button>`);
                         }
                         else
                         {
@@ -373,7 +409,7 @@ function getDatabase()
                 albums.forEach(album => 
                 {
                     cards.append(` <div class="col">
-                    <div class="card" style = "margin: 40px">
+                    <div class="card" style = "margin: 40px" id = "card`+album._id+`">
                         <div class="card-body" id = "div`+album._id+`" style = "margin: 10px" >
                             <h4 class="card-title" id = "title`+album._id+`">`+album.Album+ `</h4>
                             <h5 class="text-muted card-subtitle mb-2" id = "artist`+album._id+`">`+album.Artist+`</h6>
@@ -381,6 +417,7 @@ function getDatabase()
                             <h6 class="text-muted card-subtitle mb-2" id = "genre`+album._id+`">`+album.Genre+`</h6>
                             <button class="btn btn-warning" id = "`+album._id+`" type = "button" style = "width: 100px; margin: 10px">Edit</button>
                             <button class="btn btn-info" id = "`+album._id+`" type="button" style="width: 100px; background-color: #f25a64">&#10084</button>
+                            <button class="btn btn-danger" id = "`+album._id+`" type="button" style="margin: 10px;">Remove</button>
                     </div>
                 </div>`);
                 })

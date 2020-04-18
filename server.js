@@ -396,6 +396,32 @@ app.delete('/delFavourite', (req,res) =>
     })
 })
 
+app.delete('/delAlbum', (req,res) =>
+{
+    //Get album ID from request body
+    var albumID = req.body.albumID;
+
+    //Create id object from album ID
+    var oid = new ObjectID(albumID);
+
+    //Delete related album from DB
+    db.collection('albums').deleteOne({"_id": oid}, function(err, results)
+    {
+        if(err)
+        {
+            console.log("Error deleting album from DB");
+            res.sendStatus(500);
+            res.end();
+        }
+        else
+        {
+            console.log("Success deleting album from DB");
+            res.sendStatus(200);
+            res.end();
+        }
+    })
+})
+
 app.put('/updateAlbum', (req,res) =>
 {
     //Read in variables from request JSON
@@ -476,13 +502,19 @@ app.get('/getFavourites', (req,res) =>
                         console.log(oid);
                         db.collection('albums').find({"_id": oid}).toArray(function(err, results)
                         {
-                            favArray.push(results[0]);
+                            //If the favourite album hasn't been removed from the DB at some point
+                            if(results[0])
+                            {
+                                favArray.push(results[0]);
+                            }
                         });
                     })
+
 
                     //Wait until all albums are found
                     setTimeout(function afterSeconds()
                     {
+                        console.log(favArray);
                         res.send(favArray);
                         res.end();
                     }, 500)
