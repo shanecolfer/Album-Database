@@ -7,7 +7,7 @@ const app = express();
 const ejsLocals = require('ejs-locals');
 const expressValidator = require('express-validator');
 const ObjectID = require('mongodb').ObjectID;
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const sRounds = 12;
 
 //Configure express-session
@@ -55,7 +55,7 @@ MongoClient.connect('mongodb+srv://shanecolfer:al1916w@albumdb-7cob3.mongodb.net
     db = client.db('musicalbums'); //Db name is albums
 
     //Function to create server (only if we connect to DB successfully)
-    app.listen(3000, "192.168.1.108", function() {
+    app.listen(3000, function() {
         console.log("Listening on port 3000");
     })
 })
@@ -230,7 +230,7 @@ app.post('/login', (req,res) =>
 
     const email = req.body.email;
     const password = req.body.password;
-    
+
     //Check that password and email are not empty
     if(email && password)
     {
