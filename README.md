@@ -5,7 +5,7 @@ This album database has been built for an Enterprise Application Assignment. The
 
 # Publicly Hosted Version
 
-The most recent version of the web application is available for public use at: shanecolfer.com
+The most recent version of the web application is available for public use at: http://shanecolfer.com
 
 # Install local version
 If you would like to install a local version of the application first you must download and install node js from the node website:
