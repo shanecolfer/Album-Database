@@ -7,6 +7,8 @@ const app = express();
 const ejsLocals = require('ejs-locals');
 const expressValidator = require('express-validator');
 const ObjectID = require('mongodb').ObjectID;
+const bcrypt = require('bcrypt');
+const sRounds = 12;
 
 //Configure express-session
 app.use(session(
@@ -33,6 +35,7 @@ app.use(session(
     ))
 
 
+//Use EJS to render html files, use express validator for cookies and bodyparser to parse JSONs
 app.engine('html', require('ejs').renderFile);
 app.use(bodyParser.json({extended: true}));
 app.set('view engine', ejsLocals);
@@ -70,7 +73,7 @@ app.post('/signup', (req, res) => {
 
     if(req.session.session_id == null)
     {
-            //Check that email and password aren't blank
+        //Check that email and password aren't blank
         if(req.body.email == '' || req.body.password == '')
         {
             console.log("Empty fields");
@@ -92,23 +95,40 @@ app.post('/signup', (req, res) => {
                     if(results.length < 1)
                     {
                         console.log("Results is smaller than 1");
-                        db.collection('users').insertOne(req.body, (err, result) =>
+
+                        //Hash the password using bcrypt
+                        bcrypt.hash(req.body.password, sRounds, function(err, hash)
                         {
-                            //If error inserting, print to console
+                            //If error send 500
                             if(err)
                             {
-                                return console.log(err);
+                                console.log("Error hashing password");
                                 res.sendStatus(500);
                                 res.end();
                             }
-                    
-                            //Log succesful POST
-                            console.log("User Added");
-                    
-                            //Send a 200 OK back
-                            res.sendStatus(200);
-                            res.end();
+                            else
+                            {
+                                //Make the password equal to the hash and insert the user
+                                req.body.password = hash;
+                                console.log(hash);
+
+                                db.collection('users').insertOne(req.body, (err, result) =>
+                                {
+                                    //If error inserting, print to console
+                                    if(err)
+                                    {
+                                        res.sendStatus(500);
+                                        res.end();
+                                    }
                             
+                                    //Log succesful POST
+                                    console.log("User Added");
+                            
+                                    //Send a 200 OK back
+                                    res.sendStatus(200);
+                                    res.end();
+                                })
+                            }                            
                         }) 
                     }
                     else //Else send back a 403
@@ -162,6 +182,7 @@ app.get('/home', (req,res) =>
     }
 })
 
+//Route for the user favourites page
 app.get('/favouritespage', (req,res) => 
 {
     //Check if there's a session ID
@@ -175,6 +196,7 @@ app.get('/favouritespage', (req,res) =>
     }
 })
 
+//Route for the add album page
 app.get('/addpage', (req,res) => 
 {
     //Check if there's a session ID
@@ -188,6 +210,7 @@ app.get('/addpage', (req,res) =>
     }
 })
 
+//Route for /
 app.get('/', (req,res) =>
 {   
     //Check if there's a session ID
@@ -201,20 +224,18 @@ app.get('/', (req,res) =>
     }
 })
 
+//Route to login
 app.post('/login', (req,res) =>
 {
 
     const email = req.body.email;
     const password = req.body.password;
-
-    console.log(email);
-    console.log(password);
-
+    
     //Check that password and email are not empty
     if(email && password)
     {
         //Check that user exists
-        db.collection('users').find({"email" : email, "password" : password}).toArray(function(err, results)
+        db.collection('users').find({"email" : email}).toArray(function(err, results)
         {
             if(err)
             {
@@ -223,23 +244,57 @@ app.post('/login', (req,res) =>
             else
             {
                 user = results;
-                console.log(user);
 
+                //If one user has been found
                 if(user.length == 1)
                 {
-                   req.session.session_id = user[0].email;
-                   console.log("Cookie ID: " + req.session.session_id);
-                   res.send('/home');
+                    //Compare the plaintext password to the hash password stored
+                    bcrypt.compare(password, user[0].password, function(err, result)
+                    {
+                        //If error
+                        if(err)
+                        {
+                            console.log("Error comparing hashes")
+                            res.sendStatus(500);
+                            res.end();
+                        }
+                        else
+                        {
+                            //If hashs are the same, create a cookie and send user home
+                            if(result == true)
+                            {
+                                req.session.session_id = user[0].email;
+                                console.log("Cookie ID: " + req.session.session_id);
+                                res.send('/home');
+                            }
+                            else
+                            {
+                                //If hashs are not the same, send a 403
+                                res.sendStatus(403);
+                                res.end();
+                            }
+                        }
+                        
+                    })
                 }
                 else
                 {
                     res.sendStatus(403);
+                    res.end();
                 }
+
             }
         });
     }
+    else
+    {
+        //If password or email has not been provided, send a 403
+        res.sendStatus(403);
+        res.end();
+    }
 })
 
+//Route to an an album
 app.post('/addalbum', (req,res) => 
 {
     const album = req.body.Album;
@@ -353,6 +408,7 @@ app.get('/albumSearch', (req,res) =>
 
 })
 
+//Route to add a favourite album
 app.put('/addFavourite', (req,res) =>
 {
     var albumID = req.body.albumID;
@@ -376,6 +432,7 @@ app.put('/addFavourite', (req,res) =>
     })
 })
 
+//Route to delete a favourite album
 app.delete('/delFavourite', (req,res) =>
 {
     var albumID = req.body.albumID;
@@ -396,6 +453,7 @@ app.delete('/delFavourite', (req,res) =>
     })
 })
 
+//Route to delete an album from the DB
 app.delete('/delAlbum', (req,res) =>
 {
     //Get album ID from request body
@@ -422,6 +480,7 @@ app.delete('/delAlbum', (req,res) =>
     })
 })
 
+//Route to update an albums details
 app.put('/updateAlbum', (req,res) =>
 {
     //Read in variables from request JSON
@@ -437,6 +496,7 @@ app.put('/updateAlbum', (req,res) =>
     console.log(albumID);
     console.log(oid);
 
+    //If all of these variables are not undefined
     if(albumID && album && artist && year && genre)
     {
         //Update album with all new fields
@@ -469,7 +529,7 @@ app.put('/updateAlbum', (req,res) =>
 })
 
 
-
+//Route to retrieve users favourites
 app.get('/getFavourites', (req,res) =>
 {
 
@@ -525,28 +585,4 @@ app.get('/getFavourites', (req,res) =>
 
     
 })
-/* GRAVEYARD
-app.get('/', (req, res) => {
-    db.collection('albums').find().toArray(function(err, results)
-    {
-        console.log(results);
-    })
-})
-app.get('/', (req,res) => {
-    db.collection('albums').find().toArray((err, result) => {
-        if (err)
-        {
-            return console.log(err);
-        }
-        res.render('index.ejs', {albums: result});
-    })
-})
- /*db.collection('albums').find().toArray((err, result) => {
-        if (err)
-        {
-            return console.log(err);
-        }
-        res.render('index.ejs', {albums: result});
-    })
-    
-*/
+
